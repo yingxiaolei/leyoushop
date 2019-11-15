@@ -25,7 +25,7 @@ export default new Router({
         route("/index/dashboard","/Dashboard","Dashboard"),
         //第一个参数： 路径，第二个参数对应的是组件路径
         route("/item/category",'/item/Category',"Category"),
-        route("/item/brand",'/item/Brand',"Brand"),
+        route("/item/brand",'/item/MyBrand',"MyBrand"),
         route("/item/list",'/item/Goods',"Goods"),
         route("/item/specification",'/item/specification/Specification',"Specification"),
         route("/user/statistics",'/item/Statistics',"Statistics"),
