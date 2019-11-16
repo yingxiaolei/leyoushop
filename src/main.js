@@ -11,11 +11,12 @@ import 'vuetify/dist/vuetify.min.css'
 import qs from 'qs'
 import 'element-ui/lib/theme-chalk/index.css';
 import './assets/material.css'
-
+import { Message } from 'element-ui';
+Vue.use(Message)
 Vue.use(Vuetify, { theme: config.theme})
 Vue.use(MyComponent)
 Vue.prototype.$qs = qs;
-
+Vue.prototype.$message = Message;
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
