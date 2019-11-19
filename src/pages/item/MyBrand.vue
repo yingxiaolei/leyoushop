@@ -21,13 +21,16 @@
     <template slot="items" slot-scope="props">
           <td class="text-xs-center">{{props.item.id}} </td>
           <td class="text-xs-center">{{props.item.name}} </td>
-          <td class="text-xs-center">{{props.item.image}} </td>
+          <td class="text-xs-center">
+             <img v-if="props.item.image" :src="props.item.image" width="130" height="40">
+          <span v-else>无</span> 
+          </td>
           <td class="text-xs-center">{{props.item.letter}} </td>
           <td class="text-xs-center">
-            <v-btn flat icon color="info">
+            <v-btn flat icon color="info" @click="editBrand(props.item)">
                <v-icon>edit</v-icon>
             </v-btn>
-            <v-btn flat icon color="error">
+            <v-btn flat icon color="error" @click="deleteBrand(props.item)">
                <v-icon>delete</v-icon>
             </v-btn>
           </td>
@@ -35,7 +38,6 @@
     </v-data-table>
    
     <v-dialog v-model="dialog" persistent max-width="500px" scrollable>
-    
        <v-card>
         <!--对话框的标题-->
         <v-toolbar dense dark color="primary">
@@ -46,7 +48,7 @@
         </v-toolbar>
         <!--对话框的内容，表单-->
         <v-card-text class="px-5" style="height:400px">
-               <v-form v-model="valid" ref="myBrandForm">
+               <v-form v-model="valid" ref="myBrandForm"  :oldBrand="oldBrand">
                 <v-text-field v-model="brand.name" label="请输入品牌名称" required />
                 <v-text-field v-model="brand.letter" label="请输入品牌首字母" required />
                 <v-cascader
@@ -98,6 +100,7 @@ export default {
             dialog:false,
             isEdit:false,
             valid:false,
+            oldBrand:{},
             brand:{
               name:"",
               letter:"",
@@ -150,7 +153,35 @@ export default {
         // 控制弹窗可见：
         this.dialog = true;
         // // 把oldBrand变为null
-        // this.oldBrand = null;
+        this.oldBrand = null;
+      },
+      editBrand(oldBrand){
+        // 根据品牌信息查询商品分类
+        this.$http.get("/item/category/bid/")
+          .then(({data}) => {
+            // 修改标记
+            this.isEdit = true;
+            // 控制弹窗可见：
+            this.dialog = true;
+            // 获取要编辑的brand
+            this.brand = oldBrand
+            // 回显商品分类
+            this.brand.categories = data;
+          })
+      }, 
+      deleteBrand(oldBrand){
+        // 根据品牌信息查询商品分类
+         this.$http({
+            method: 'delete',
+            url: '/item/brand',
+            data: {
+                bid : oldBrand.id
+            }
+          })
+          .then(({data}) => {
+                 this.$message.success("删除成功！");
+                 this.loadBrands();
+          })
       },
        closeWindow(){
         // 关闭窗口
